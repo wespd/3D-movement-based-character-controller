@@ -1,4 +1,4 @@
-using System.Collections;
+    using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,34 +12,49 @@ public class movement : MonoBehaviour
     public KeyCode right;
     public KeyCode jump;
     public float jumpStrength;
+    public float jumpDetectionHeight;
+    public float maxDistance;
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 currentVelocity = new Vector3(0, rB.velocity.y, 0);
-        
-        if(Input.GetKeyDown(jump))
+        float acceleration = speed/Mathf.Max(rB.velocity.magnitude, 1); 
+        //rB.velocity = new Vector3(0, rB.velocity.y, 0);
+        if(isGrounded())
         {
-            rB.AddForce(transform.up * jumpStrength);
+                if(Input.GetKey(forward))
+            {
+                rB.AddForce(transform.forward * acceleration);
+            }
+            if(Input.GetKey(backward))
+            {
+                rB.AddForce(-transform.forward * acceleration);
+            }
+            if(Input.GetKey(left))
+            {
+                rB.AddForce(-transform.right * acceleration);
+            }
+            if(Input.GetKey(right))
+            {
+                rB.AddForce(transform.right * acceleration);
+            }
+                if(Input.GetKeyDown(jump))
+            {
+                rB.AddForce(transform.up * jumpStrength, ForceMode.Impulse);
+            }
         }
-        if(Input.GetKey(forward))
+    }
+    public bool isGrounded()
+    {
+        RaycastHit hit;
+        bool hitObject = Physics.SphereCast(transform.position, transform.localScale.x/2, -transform.up, out hit, transform.localScale.y + jumpDetectionHeight);
+        if(hit.collider != null && hit.collider.GetComponent<cantJumpOn>() != null)
         {
-            currentVelocity += (transform.forward * speed);
+            return true;
         }
-        if(Input.GetKey(backward))
+        else
         {
-            currentVelocity += (-transform.forward * speed);
+            return false;
         }
-        if(Input.GetKey(left))
-        {
-            currentVelocity += (-transform.right * speed);
-        }
-        if(Input.GetKey(right))
-        {
-            currentVelocity += (transform.right * speed);
-        }
-
-        rB.velocity = currentVelocity;
-        
     }
 }

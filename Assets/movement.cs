@@ -59,10 +59,14 @@ public class movement : MonoBehaviour
         {
             frictionAmount /= notMovingFrictionMultiplier;
         }
-        if(rB.velocity.x <= 0.01)
+        /*if(rB.velocity.x <= 0.01)
         {
-            //rB.volcity = new Vector3();
+            rB.velocity = new Vector3(0,rB.velocity.y,rB.velocity.z);
         }
+        if(rB.velocity.z <= 0.01 && )
+        {
+            rB.velocity = new Vector3(rB.velocity.x,rB.velocity.y,0);
+        }*/
     }
     
     public bool isGrounded()

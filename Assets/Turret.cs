@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Turret : MonoBehaviour
 {
-    public Transform playerTransform;
+    Transform playerTransform;
     public float rotationSpeed;
     private Quaternion lookRotation;
     private Vector3 direction;
@@ -12,6 +12,7 @@ public class Turret : MonoBehaviour
     public bool isDetecting;
     public Transform muzzleLocation;
     public firing firer;
+    public float damage;
 
     // Update is called once per frame
     void FixedUpdate()
@@ -36,8 +37,7 @@ public class Turret : MonoBehaviour
             Debug.DrawRay(muzzleLocation.position, transform.forward * 100f, Color.blue);
             if(Physics.Raycast(muzzleLocation.position, transform.forward, out RaycastHit hit) && hit.collider.GetComponent<movement>() != null)
             {
-                firer.shoot();
-                Debug.Log("player hit");
+                firer.shoot(muzzleLocation, damage);
             }
         }
         
@@ -48,6 +48,7 @@ public class Turret : MonoBehaviour
         if(other.GetComponent<movement>() != null)
         {
             isDetecting = true;
+            playerTransform = other.transform;
         }
     }
     void OnTriggerExit(Collider other)
@@ -55,6 +56,7 @@ public class Turret : MonoBehaviour
         if(other.GetComponent<movement>() != null)
         {
             isDetecting = false;
+            playerTransform = null;
         }
     }
 }

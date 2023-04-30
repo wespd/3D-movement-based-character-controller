@@ -4,37 +4,18 @@ using UnityEngine;
 
 public class firing : MonoBehaviour
 {
-    public gunManager manager;
     public Transform shooterObject;
     public float MaxDistance;
     public RaycastHit hit;
     public GameObject line;
-    float currentCooldown;
-    bool canShoot;
+    bool isHit;
+    
 
-    // Update is called once per frame
-    void Update()
+    
+    public void shoot(Transform muzzle, float damage)
     {
-        if(!canShoot  && manager.equiuppedGun != null && currentCooldown < 1/manager.equiuppedGun.objGun.rateofFire)
-        {
-            currentCooldown += Time.deltaTime;
-        }
-        else if(!canShoot)
-        {
-            currentCooldown = 0;
-            canShoot = true;
-        }
-        
-        if (Input.GetMouseButton(0) && manager.equiuppedGun != null && canShoot)
-        {
-            shoot();
-            canShoot = false;  
-        }
-    }
-    public void shoot()
-    {
-        Transform muzzle = manager.equiuppedGun.muzzleLocation;
-        bool isHit = Physics.Raycast(muzzle.position, shooterObject.forward,out hit, MaxDistance);
+        int layer = 1 << LayerMask.NameToLayer("Default");
+        isHit = Physics.Raycast(muzzle.position, muzzle.forward,out hit, MaxDistance, layer, QueryTriggerInteraction.Ignore);
         GameObject newLine = Instantiate(line);
         LineRenderer lineRender = newLine.GetComponent<LineRenderer>();
         lineRender.SetPosition(0, muzzle.position);
@@ -44,14 +25,12 @@ public class firing : MonoBehaviour
             health objHealth = hit.collider.GetComponent<health>();
             if(objHealth != null)
             {
-                objHealth.takeDamage(manager.equiuppedGun.objGun.damage);
+                objHealth.takeDamage(damage);
             }
         }
         else
         {
             lineRender.SetPosition(1,muzzle.position + shooterObject.forward * MaxDistance);
-        }
-        manager.equiuppedGun.UseAmmo();
-        
+        } 
     }
 }

@@ -8,6 +8,8 @@ public class playerRaycastView : MonoBehaviour
     public float distance;
     public Vector3 direction;
     Camera cam;
+    public Vector3 hitLocation;
+    public bool lookingAtSomething;
     // Update is called once per frame
     void Start()
     {
@@ -16,10 +18,18 @@ public class playerRaycastView : MonoBehaviour
     void Update()
     {
         Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        int layer = 1 << LayerMask.NameToLayer("Default");
+        if (Physics.Raycast(ray, out RaycastHit hit, 1000f, layer, QueryTriggerInteraction.Ignore))
         {
             ObjectInView = hit.transform.gameObject;
             distance = hit.distance;
+            hitLocation = hit.point;
+            lookingAtSomething = true;
+        }
+        else
+        {
+            lookingAtSomething = false;
+            hitLocation = direction * 1000f;
         }
         direction = ray.direction;
     }

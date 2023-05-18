@@ -1,0 +1,26 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class characterManager : MonoBehaviour
+{
+    public float maxHealth;
+    public float currentHealth;
+    public float damageModifier;
+    public void changeHealth(int other)
+    {
+        currentHealth += other;
+        if(currentHealth <= 0)
+        {
+            Debug.Log(gameObject + " died")
+        }
+    }
+    void Start()
+    {
+        currentHealth = maxHealth;
+    }
+    void Update()
+    {
+        
+    }
+}
